@@ -9,24 +9,24 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "usr")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Chapter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NonNull
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "manga_id")
+    private Manga manga;
 
     @NonNull
-    private String password;
+    private int number;
 
     @NonNull
-    private String email;
-
+    @OneToMany(targetEntity = Page.class, mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Page> pages;
 
 }

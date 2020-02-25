@@ -6,27 +6,21 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "usr")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Page {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NonNull
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "chapter_id")
+    private Chapter chapter;
 
     @NonNull
-    private String password;
-
-    @NonNull
-    private String email;
-
-
+    private byte[] image;
 }
