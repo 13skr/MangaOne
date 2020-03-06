@@ -21,6 +21,9 @@ public class Page {
     @JoinColumn(name = "chapter_id")
     private Chapter chapter;
 
+    private int number;
+
     @NonNull
-    private byte[] image;
+    @Lob
+    private String image;
 }

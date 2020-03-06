@@ -26,6 +26,9 @@ public class Manga {
     private int views;
     private double rating;
 
+    @Lob
+    private String image;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

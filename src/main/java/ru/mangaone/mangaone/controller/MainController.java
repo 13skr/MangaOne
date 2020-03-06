@@ -4,12 +4,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mangaone.mangaone.domain.Manga;
-import ru.mangaone.mangaone.repository.MangaRepository;
+import ru.mangaone.mangaone.repo.MangaRepository;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/manga")
+@RequestMapping("/api/manga")
 public class MainController {
 
     private final MangaRepository mangaRepository;
@@ -41,8 +41,9 @@ public class MainController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteManga(@PathVariable("id") Manga manga) {
+    public int deleteManga(@PathVariable("id") Manga manga) {
         mangaRepository.delete(manga);
+        return 1;
     }
 
 }

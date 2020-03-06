@@ -25,6 +25,8 @@ public class Chapter {
     @NonNull
     private int number;
 
+    private String name;
+
     @NonNull
     @OneToMany(targetEntity = Page.class, mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Page> pages;

@@ -1,92 +1,66 @@
 <template>
-    <div>
-        <div class="create">
-            <form @submit.prevent="createManga">
-                <input type="text" v-model="name" placeholder="Name">
-                <input type="text" v-model="author" placeholder="Author">
-                <button type="submit">Create</button>
-            </form>
-        </div>
-        <div class="list">
-            <ul v-if="mangas.length">
-                <li class="item" v-for="manga in mangas" :manga="manga" :key="id">
-                    {{ manga.name }}, {{manga.author}}
-                    <button @click="deleteManga(manga.id)">
-                        Remove
-                    </button>
-                </li>
-            </ul>
-            <p v-else>
-                Nothing left! Please add new Manga.
-            </p>
-        </div>
-    </div>
+    <v-container >
+        <v-row wrap >
+            <v-col cols="12" md="6" lg="3" v-for="manga in mangaArray" :key="manga.id">
+                <v-skeleton-loader :loading="loading" transition="scale-transition" height="94" type="list-item-two-line">
+                    <v-card outlined raised class="text-center ma-2" height="300px" width="200px">
+                        <v-responsive >
+                            <v-img @click="linkTo(manga.id)" class="white--text align-end"
+                                   :src="manga.image" height="300px" width="200px">
+                                <v-card-title v-text="manga.name"></v-card-title>
+                            </v-img>
+                        </v-responsive>
+                    </v-card>
+                </v-skeleton-loader>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
     import axios from 'axios';
+    import {mapState, mapMutations, mapActions} from 'vuex'
 
     export default {
         data() {
-            return {
-                mangas: [],
-                id: null,
-                name: '',
-                author: ''
-            }
+          return {
+              path: "/manga/",
+              loading: false
+          }
+        },
+        computed: {
+            ...mapState(['mangaArray']),
         },
         methods: {
-            createManga() {
-                axios.post("/manga", {
-                    name: this.name,
-                    author: this.author
-                })
-                    .then(() => this.getManga())
-                    .catch(e => {
-                        console.exception(e)
-                    })
+            ...mapMutations(['addMangaArrayMutation']),
+            ...mapActions(['deleteMangaAction']),
+            linkTo(item) {
+                return this.$router.push('/manga/' + item)
             },
-            getManga() {
-                axios.get('/manga')
-                    .then(response => {
-                        this.mangas = response.data
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-            },
-            deleteManga (idToRemove) {
-                axios.delete("/manga/" + idToRemove)
-                    .then(() => this.getManga())
-                    .catch(e => console.exception(e))
+            deleteManga(manga) {
+                this.deleteMangaAction(manga)
             }
         },
-        mounted() {
-            this.getManga()
+        created() {
+            this.loading = true
+            const current = this
+            axios.get('/api/manga')
+                .then(response => {
+                    console.log('get manga again',response.data)
+                    current.addMangaArrayMutation(response.data)
+                    // current.loading = false
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+                .then(() => {
+                    current.loading = false
+                    console.log(current.mangaArray)
+                })
         }
     }
 </script>
 
 <style scoped>
-
-    div {
-        color: white;
-    }
-
-    p {
-        text-align: center;
-    }
-
-    input {
-        width: 100px;
-        padding: 8px 10px;
-        border: 1px solid;
-    }
-
-    .item, .create{
-        display: flex;
-        align-items: self-start;
-        justify-content: center;
-    }
 
 </style>
