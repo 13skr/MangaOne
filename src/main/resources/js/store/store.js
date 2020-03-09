@@ -81,7 +81,7 @@ export default new Vuex.Store({
             }))
         },
         addPagesAction({commit}, manga) {
-            axios.post('/api/chapter add/pages', manga.chapters[manga.chapters.length - 1].pages)
+            axios.post('/api/chapter/pages', manga.chapters[manga.chapters.length - 1].pages)
                 .then(response => {
                     manga.chapters[manga.chapters.length - 1].pages = response.data
                     commit('updateMangaMutation', manga)
