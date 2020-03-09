@@ -6,6 +6,7 @@ build/
 !**/src/test/**
 lombok.config
 node_modules
+/src/main/resources/static/js/
 
 ### STS ###
 .apt_generated

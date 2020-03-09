@@ -5,9 +5,25 @@ plugins {
 	id 'java'
 }
 
+plugins {
+	id "com.moowork.node" version "1.3.1"
+}
+
 group = 'ru.mangaone'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+task buildFront(type: NpmTask) {
+	args = ['run-script' ,'build']
+}
+
+task cacheClean(type: NpmTask) {
+	args = ['cache' ,'clean', '--force']
+}
+
+npm_install.dependsOn(cacheClean)
+buildFront.dependsOn(npm_install)
+processResources.dependsOn(buildFront)
 
 configurations {
 	developmentOnly
@@ -18,6 +34,10 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+node {
+	download = true
 }
 
 dependencies {

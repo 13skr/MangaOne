@@ -47,7 +47,6 @@
             axios.get('/api/manga')
                 .then(response => {
                     current.addMangaArrayMutation(response.data)
-                    // current.loading = false
                 })
                 .catch(e => {
                     console.log(e)
