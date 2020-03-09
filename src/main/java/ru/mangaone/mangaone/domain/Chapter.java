@@ -1,5 +1,7 @@
 package ru.mangaone.mangaone.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,15 +22,15 @@ public class Chapter {
 
     @ManyToOne
     @JoinColumn(name = "manga_id")
+    @JsonIgnoreProperties("chapters")
     private Manga manga;
 
-    @NonNull
     private int number;
 
     private String name;
 
-    @NonNull
-    @OneToMany(targetEntity = Page.class, mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = Page.class, mappedBy = "chapter",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Page> pages;
 
 }

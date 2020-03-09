@@ -41,10 +41,17 @@
         <v-container>
             <v-card width="100%">
                 <v-list>
-                    <v-list-item v-for="chapter in manga.chapters" :key="manga.chapters.number" @click="">
-                        <v-list-item-content>
-                            <v-list-item-title v-text="chapter.name"/>
+                    <v-list-item v-for="chapter in manga.chapters"
+                                 :key="manga.chapters.number"
+                                 >
+                        <v-list-item-content @click="linkTo(chapter.id)">
+                            <v-list-item-title  v-text="chapter.name"/>
                         </v-list-item-content>
+                        <v-list-item-action>
+                            <v-btn icon @click="deleteChapter(chapter.id)">
+                                <v-icon>remove</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
                     </v-list-item>
                 </v-list>
             </v-card>
@@ -72,7 +79,12 @@
             }
 
             reloadArray(function () {
-                current.manga = current.mangaArray.find(x => x.id === parseInt(index))
+                for (let i = 0; i < current.mangaArray.length; i++) {
+                    if (current.mangaArray[i].id === parseInt(index)) {
+                        current.manga = current.mangaArray[i]
+                        break
+                    }
+                }
             })
         },
         data() {
@@ -87,7 +99,8 @@
                     status: '',
                     image: '',
                     chapters: []
-                }
+                },
+                path: '/manga/' + this.$route.params.id + '/chapter/'
             }
         },
         computed: {
@@ -106,12 +119,38 @@
                 cur.deleteMangaAction(manga)
                 cur.$router.push('/')
             },
-            updateManga(manga) {
-                this.updateMangaAction(manga)
-            },
             addChapter() {
                 this.$router.push('/manga/' + this.$route.params.id + '/chapter')
+            },
+            linkTo(index) {
+                this.$router.push('/manga/' + this.$route.params.id + '/chapter/' + index)
+            },
+            deleteChapter(index) {
+                axios.delete('/api/chapter/' + index)
             }
+        },
+        updated() {
+            const current = this
+            const index = current.$route.params.id
+            function reloadArray(callback) {
+                axios.get('/api/manga')
+                    .then(response => {
+                        current.addMangaArrayMutation(response.data)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+                    .then(callback)
+            }
+
+            reloadArray(function () {
+                for (let i = 0; i < current.mangaArray.length; i++) {
+                    if (current.mangaArray[i].id === parseInt(index)) {
+                        current.manga = current.mangaArray[i]
+                        break
+                    }
+                }
+            })
         }
     }
 </script>

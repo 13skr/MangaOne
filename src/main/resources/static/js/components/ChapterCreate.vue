@@ -39,18 +39,27 @@
             }
 
             reloadArray(function () {
-                current.manga = current.mangaArray.find(x => x.id === parseInt(index))
+                for (let i = 0; i < current.mangaArray.length; i++) {
+                    if (current.mangaArray[i].id === parseInt(index)) {
+                        current.manga = current.mangaArray[i]
+                        current.chapter.manga.id = current.manga.id
+                        break
+                    }
+                }
             })
         },
         data() {
             return {
                 manga: null,
                 chapter: {
+                    manga: {
+                        id: null
+                    },
                     name: '',
                     number: null,
                     pages: []
                 },
-                file: []
+                file: [],
             }
         },
         computed: {
@@ -61,18 +70,26 @@
                 'addMangaArrayMutation'
             ]),
             ...mapActions([
-                'updateMangaAction'
+                'updateMangaAction',
+                'addChapterAction',
+                'addPagesAction'
             ]),
             createChapter() {
-                for (let i = 0; i < this.file.length; i++) {
-                    let isLast = false
-                    if (this.file.length - i === 1) {
-                        isLast = true
+                let cur = this
+                this.manga.chapters.push(this.chapter)
+                cur.addChapterAction(this.manga).then(resp => {
+                    for (let i = 0; i < this.file.length; i++) {
+                        let isLast = false
+                        if (this.file.length - i === 1) {
+                            isLast = true
+                        }
+                        this.readFile(this.file[i], i, isLast, resp)
                     }
-                    this.readFile(this.file[i], i, isLast)
-                }
+                })
+
+
             },
-            readFile(file, index, isLast) {
+            readFile(file, index, isLast, resp) {
                 const current = this
 
                 function fileToByte(callback) {
@@ -80,10 +97,10 @@
 
                     fileReader.onload = e => {
                         current.chapter.pages.push({
+                            chapter: resp,
                             image: e.target.result,
                             number: index
                         })
-                        // console.log(e.target.result)
                         callback(isLast)
                     }
 
@@ -92,10 +109,8 @@
 
                 fileToByte(function (isLastFile) {
                     if (isLastFile) {
-                        current.manga.chapters.push(current.chapter)
-                        console.log(current.manga)
-                        current.updateMangaAction(current.manga)
-                        console.log('callback')
+                        current.manga.chapters[current.manga.chapters.length -1] = current.chapter
+                        current.addPagesAction(current.manga)
                         current.$router.push('/manga/' + current.$route.params.id)
                     }
                 })

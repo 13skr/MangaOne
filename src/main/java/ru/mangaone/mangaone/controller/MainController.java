@@ -2,6 +2,7 @@ package ru.mangaone.mangaone.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.mangaone.mangaone.domain.Manga;
 import ru.mangaone.mangaone.repo.MangaRepository;
@@ -20,11 +21,13 @@ public class MainController {
     }
 
     @GetMapping
+    @Transactional
     public List<Manga> listManga() {
         return mangaRepository.findAll();
     }
 
     @GetMapping("{id}")
+    @Transactional
     public Manga getManga(@PathVariable("id") Manga manga) {
         return manga;
     }

@@ -46,7 +46,6 @@
             const current = this
             axios.get('/api/manga')
                 .then(response => {
-                    console.log('get manga again',response.data)
                     current.addMangaArrayMutation(response.data)
                     // current.loading = false
                 })
@@ -55,7 +54,6 @@
                 })
                 .then(() => {
                     current.loading = false
-                    console.log(current.mangaArray)
                 })
         }
     }

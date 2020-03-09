@@ -1,5 +1,6 @@
 package ru.mangaone.mangaone.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,11 +20,11 @@ public class Page {
 
     @ManyToOne
     @JoinColumn(name = "chapter_id")
+    @JsonIgnoreProperties("pages")
     private Chapter chapter;
 
     private int number;
 
-    @NonNull
     @Lob
     private String image;
 }

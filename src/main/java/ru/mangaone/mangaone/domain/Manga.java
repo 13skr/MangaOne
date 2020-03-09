@@ -18,7 +18,6 @@ public class Manga {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NonNull
     private String name;
     private String author;
     private String artist;
