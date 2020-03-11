@@ -10,6 +10,12 @@
 ![versionnodejs](https://img.shields.io/badge/node.js-13.9.0-brightgreen.svg?logo=node.js)
 ![versionbabel](https://img.shields.io/badge/babel-7.8.4-brightgreen.svg?logo=babel)
 ![versionaxios](https://img.shields.io/badge/axios-0.19.2-brightgreen)
+[![Deployed on Heroku](https://img.shields.io/badge/heroku-deployed-blueviolet.svg?logo=heroku)](https://mangaone.herokuapp.com/)
 
 ### About
 Web application for reading/uploading manga (japanese comics)
+
+**Note:** Because I'm using free plan in Heroku,
+dyno sleeps after 30 minutes of inactivity.
+Thats why you need to wait some time for heroku
+to start the dyno again.
