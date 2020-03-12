@@ -1,9 +1,8 @@
-package ru.mangaone.mangaone.domain;
+package ru.mangaone.mangaone.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.List;

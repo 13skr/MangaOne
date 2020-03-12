@@ -4,9 +4,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.mangaone.mangaone.domain.Manga;
+import ru.mangaone.mangaone.dto.MangaBaseDto;
+import ru.mangaone.mangaone.dto.MangaSimplifiedDto;
+import ru.mangaone.mangaone.entity.Manga;
 import ru.mangaone.mangaone.repo.MangaRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,10 +29,27 @@ public class MainController {
         return mangaRepository.findAll();
     }
 
+    @GetMapping("/simple")
+    @Transactional
+    public List<MangaBaseDto> listMangaSimplified() {
+        List<MangaBaseDto> result = new ArrayList<>();
+
+        for (Manga manga:mangaRepository.findAll()) {
+            result.add(new MangaBaseDto(manga));
+        }
+        return result;
+    }
+
     @GetMapping("{id}")
     @Transactional
     public Manga getManga(@PathVariable("id") Manga manga) {
         return manga;
+    }
+
+    @GetMapping("{id}/simple")
+    @Transactional
+    public MangaSimplifiedDto getMangaSimplified(@PathVariable("id") Manga manga) {
+        return new MangaSimplifiedDto(manga);
     }
 
     @PostMapping

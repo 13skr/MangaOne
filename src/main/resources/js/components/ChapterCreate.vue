@@ -26,27 +26,11 @@
     export default {
         created() {
             const current = this
-            const index = current.$route.params.id
-            function reloadArray(callback) {
-                axios.get('/api/manga')
-                    .then(response => {
-                        current.addMangaArrayMutation(response.data)
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-                    .then(callback)
-            }
-
-            reloadArray(function () {
-                for (let i = 0; i < current.mangaArray.length; i++) {
-                    if (current.mangaArray[i].id === parseInt(index)) {
-                        current.manga = current.mangaArray[i]
-                        current.chapter.manga.id = current.manga.id
-                        break
-                    }
-                }
-            })
+            axios.get('/api/manga/' + this.$route.params.id)
+                .then(response => {
+                    current.manga = response.data
+                    current.chapter.manga.id = current.manga.id
+                })
         },
         data() {
             return {
@@ -62,15 +46,8 @@
                 file: [],
             }
         },
-        computed: {
-            ...mapState(['mangaArray'])
-        },
         methods: {
-            ...mapMutations([
-                'addMangaArrayMutation'
-            ]),
             ...mapActions([
-                'updateMangaAction',
                 'addChapterAction',
                 'addPagesAction'
             ]),
@@ -86,8 +63,6 @@
                         this.readFile(this.file[i], i, isLast, resp)
                     }
                 })
-
-
             },
             readFile(file, index, isLast, resp) {
                 const current = this

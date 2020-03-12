@@ -41,8 +41,8 @@
         <v-container>
             <v-card width="100%">
                 <v-list>
-                    <v-list-item v-for="chapter in manga.chapters"
-                                 :key="manga.chapters.number"
+                    <v-list-item v-for="chapter in chapters"
+                                 :key="chapters.number"
                                  >
                         <v-list-item-content @click="linkTo(chapter.id)">
                             <v-list-item-title  v-text="chapter.name"/>
@@ -64,28 +64,18 @@
     import axios from "axios"
 
     export default {
-        created() {
+        created() { // получить упрощенную мангу без страниц, но с главами
             const current = this
-            const index = current.$route.params.id
-            function reloadArray(callback) {
-                axios.get('/api/manga')
-                    .then(response => {
-                        current.addMangaArrayMutation(response.data)
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-                    .then(callback)
-            }
-
-            reloadArray(function () {
-                for (let i = 0; i < current.mangaArray.length; i++) {
-                    if (current.mangaArray[i].id === parseInt(index)) {
-                        current.manga = current.mangaArray[i]
-                        break
-                    }
-                }
-            })
+            axios.get('/api/manga/' + this.$route.params.id + '/simple')
+                .then(response => {
+                    current.manga = response.data
+                    axios.get('/api/chapter/simple/' + current.manga.id)
+                        .then(chapterResponse => {
+                            console.log(chapterResponse.data)
+                            current.manga.chapters = chapterResponse.data
+                            current.chapters = chapterResponse.data
+                        })
+                })
         },
         data() {
             return {
@@ -100,19 +90,13 @@
                     image: '',
                     chapters: []
                 },
+                chapters: [],
                 path: '/manga/' + this.$route.params.id + '/chapter/'
             }
         },
-        computed: {
-            ...mapState(['mangaArray'])
-        },
         methods: {
-            ...mapMutations([
-                'addMangaArrayMutation'
-            ]),
             ...mapActions([
                 'deleteMangaAction',
-                'updateMangaAction'
             ]),
             deleteManga(manga) {
                 const cur = this
@@ -126,32 +110,20 @@
                 this.$router.push('/manga/' + this.$route.params.id + '/chapter/' + index)
             },
             deleteChapter(index) {
-                axios.delete('/api/chapter/' + index)
+                const current = this
+                axios.delete('/api/chapter/' + index).then(() => {
+                    axios.get('/api/manga/' + this.$route.params.id + '/simple')
+                        .then(response => {
+                            current.manga = response.data
+                            axios.get('api/chapter/simple')
+                                .then(chapterResponse => {
+                                    console.log(chapterResponse.data)
+                                    current.manga.chapters = chapterResponse.data
+                                })
+                        })
+                })
             }
         },
-        updated() {
-            const current = this
-            const index = current.$route.params.id
-            function reloadArray(callback) {
-                axios.get('/api/manga')
-                    .then(response => {
-                        current.addMangaArrayMutation(response.data)
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    })
-                    .then(callback)
-            }
-
-            reloadArray(function () {
-                for (let i = 0; i < current.mangaArray.length; i++) {
-                    if (current.mangaArray[i].id === parseInt(index)) {
-                        current.manga = current.mangaArray[i]
-                        break
-                    }
-                }
-            })
-        }
     }
 </script>
 

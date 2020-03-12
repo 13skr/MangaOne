@@ -16,7 +16,6 @@
 
 <script>
     import axios from 'axios'
-    import {mapState} from "vuex"
 
     export default {
         data() {
@@ -25,7 +24,7 @@
                 i: 0
             }
         },
-        mounted() {
+        created() {
             const current = this
             axios.get('/api/chapter/' + this.$route.params.number)
                 .then(response => {
@@ -33,17 +32,14 @@
                 })
 
         },
-        computed: {
-            ...mapState(['mangaArray'])
-        },
         methods: {
             nextPage() {
-                if (this.i < this.chapter.pages.length) {
+                if (this.i < this.chapter.pages.length - 1) {
                     this.i++
                 }
             },
             previousPage() {
-                if (this.i >= 0) {
+                if (this.i > 0) {
                     this.i--
                 }
             }

@@ -41,10 +41,10 @@
                 this.deleteMangaAction(manga)
             }
         },
-        created() {
+        created() { // принимать упрощённый вариант манги без списка глав и картинок, возможно через ?
             this.loading = true
             const current = this
-            axios.get('/api/manga')
+            axios.get('/api/manga/simple')
                 .then(response => {
                     current.addMangaArrayMutation(response.data)
                 })

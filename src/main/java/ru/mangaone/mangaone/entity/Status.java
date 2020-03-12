@@ -1,4 +1,4 @@
-package ru.mangaone.mangaone.domain;
+package ru.mangaone.mangaone.entity;
 
 public enum Status {
     ONGOING,
